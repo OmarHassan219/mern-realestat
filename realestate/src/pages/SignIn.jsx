@@ -5,7 +5,6 @@ import {
   SIGN_IN_FAILURE,
   SIGN_IN_START,
   SIGN_IN_SUCCESS,
-  SelectCurrentUser,
   SelectError,
   SelectLoading,
 } from "../redux/user/userSlice";
@@ -32,10 +31,11 @@ const Signin = () => {
         },
         body: JSON.stringify(formData),
       });
+
       const data = await response.json();
+
       if (data.success === false) {
         dispatch(SIGN_IN_FAILURE(data.message));
-
         return;
       }
       dispatch(SIGN_IN_SUCCESS(data));
@@ -46,6 +46,25 @@ const Signin = () => {
       dispatch(SIGN_IN_FAILURE(error.message));
     }
   };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
 
   const handleChange = (e) => {
     const { id, value } = e.target;

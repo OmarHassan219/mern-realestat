@@ -21,15 +21,38 @@ const navigate = useNavigate()
     });
 
     const data = await response.json();
+
+
     if (data.success === false) {
       setError(data.message);
       setLoading(false);
+      return;
     }
+
+
+
     setLoading(false);
     setError(null);
     navigate('/sign-in')
     console.log(data);
   };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   const handleChange = (e) => {
     const { id, value } = e.target;
