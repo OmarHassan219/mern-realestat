@@ -1,6 +1,14 @@
 import {FaSearch} from 'react-icons/fa'
+import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { SelectCurrentUser } from '../redux/user/userSlice'
+import { current } from '@reduxjs/toolkit'
 const Headers = () => {
+
+const currentUser = useSelector(SelectCurrentUser)
+
+
+
   return (
     <header className="bg-slate-200 shadow-md">
         <div className="flex justify-between items-center max-w-6xl mx-auto p-3">
@@ -21,9 +29,27 @@ const Headers = () => {
     <Link to="about">
     <li className='hidden sm:inline hover:underline text-slate-700 cursor-pointer' >About</li>
     </Link>
-    <Link to="/">
+    {!currentUser ? (
+
+      <Link to="/sign-in">
     <li className='hover:underline text-slate-700 cursor-pointer' >Sign in</li>
     </Link>
+
+
+
+
+      ):
+      (
+
+<img   src={currentUser.avatar} alt='profile'  className='rounded-full h-7 w-7 object-cover ' />
+
+
+      )
+      
+      
+      
+      
+      }
 </ul>
         </div>
     </header>

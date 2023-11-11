@@ -48,25 +48,6 @@ const Signin = () => {
     }
   };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   const handleChange = (e) => {
     const { id, value } = e.target;
 
@@ -97,7 +78,7 @@ const Signin = () => {
         >
           {loading ? "loading..." : "Sign In"}
         </button>
-        <OAuth/>
+        <OAuth />
       </form>
       <div className="flex gap-2 mt-5">
         <p>Dont Have an account?</p>

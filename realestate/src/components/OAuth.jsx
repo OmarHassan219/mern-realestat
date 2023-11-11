@@ -7,6 +7,8 @@ import {useNavigate} from 'react-router-dom';
 const OAuth = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
+const from = location.state?.from?.pathname || "/";
+
   const handleGoogleClick = async () => {
     try {
       const provider = new GoogleAuthProvider();
@@ -26,6 +28,7 @@ const OAuth = () => {
       });
 const data = await res.json();
 dispatch(SIGN_IN_SUCCESS(data))
+navigate('/' , {replace: true});
     } catch (error) {
       console.log("could not sign in with Google", error);
     }
