@@ -24,10 +24,23 @@ const userSlice = createSlice({
       state.loading = false;
 
     },
+    UPDATE_USER_START(state){
+      state.loading = true;
+    },
+    UPDATE_USER_SUCCESS(state ,action){
+      state.currentUser = action.payload;
+      state.error= false;
+      state.loading = false;
+    },
+    UPDATE_USER_FAILURE(state ,action){
+      state.error= action.payload;
+      state.loading = false;
+    },
+
   },
 });
 
-export const {SIGN_IN_FAILURE , SIGN_IN_SUCCESS , SIGN_IN_START} = userSlice.actions;
+export const {SIGN_IN_FAILURE , SIGN_IN_SUCCESS , SIGN_IN_START , UPDATE_USER_FAILURE , UPDATE_USER_START , UPDATE_USER_SUCCESS} = userSlice.actions;
 
 
 

@@ -6,7 +6,7 @@ import { useSelector } from "react-redux"
 const PrivateRoute = () => {
     const currentUser = useSelector(SelectCurrentUser)
 
-  return  currentUser ? <Outlet/> : <Navigate  to="/sign-in" />
+  return  currentUser ? <Outlet/> : <Navigate state={{ from: location }} replace to="/sign-in" />
   
 }
 
