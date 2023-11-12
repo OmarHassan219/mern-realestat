@@ -1,5 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import {
+  DELETE_USER_FAILURE,
+  DELETE_USER_START,
+  DELETE_USER_SUCCESS,
   SelectCurrentUser,
   SelectError,
   SelectLoading,
@@ -98,6 +101,31 @@ const Profile = () => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
+const handleDeleteUser = async (e) => {
+
+try {
+  dispatch(DELETE_USER_START());
+  const res = await fetch(`/api/user/delete/${currentUser._id}` , {
+method: 'DELETE',
+})
+const data = await res.json();
+if(data.success === false) {
+dispatch(DELETE_USER_FAILURE(data.message));
+return;
+}
+
+dispatch(DELETE_USER_SUCCESS(data));
+} catch (error) {
+  dispatch(DELETE_USER_FAILURE(error.message))
+}
+
+
+
+}
+
+
+
+
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
@@ -158,7 +186,7 @@ const Profile = () => {
         </button>
       </form>
       <div className="flex justify-between mt-5">
-        <span className="text-red-700 cursor-pointer ">Delete Account</span>
+        <span onClick={handleDeleteUser} className="text-red-700 cursor-pointer ">Delete Account</span>
         <span className="text-red-700 cursor-pointer ">Sign Out</span>
       </div>
       <p className="text-red-700 mt-5">{error ? error : ""}</p>
