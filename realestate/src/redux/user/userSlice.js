@@ -46,6 +46,18 @@ const userSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    SIGNOUT_USER_START(state) {
+      state.loading = true;
+    },
+  SIGNOUT_USER_SUCCESS(state) {
+      state.loading = false;
+      state.currentUser = null;
+      state.error = null;
+    },
+    SIGNOUT_USER_FAILURE(state, action) {
+      state.loading = false;
+      state.error = action.payload;
+    },
   },
 });
 
@@ -58,7 +70,10 @@ export const {
   UPDATE_USER_SUCCESS,
   DELETE_USER_START,
   DELETE_USER_SUCCESS,
-  DELETE_USER_FAILURE
+  DELETE_USER_FAILURE,
+  SIGNOUT_USER_FAILURE,
+  SIGNOUT_USER_SUCCESS,
+  SIGNOUT_USER_START
 } = userSlice.actions;
 
 export const SelectCurrentUser = (state) => state.user.currentUser;

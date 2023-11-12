@@ -40,8 +40,9 @@ const currentUser = useSelector(SelectCurrentUser)
 
       ):
       (
-
+<Link to='/profile'>
 <img   src={currentUser.avatar} alt='profile'  className='rounded-full h-7 w-7 object-cover ' />
+</Link>
 
 
       )

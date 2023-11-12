@@ -3,6 +3,9 @@ import {
   DELETE_USER_FAILURE,
   DELETE_USER_START,
   DELETE_USER_SUCCESS,
+  SIGNOUT_USER_FAILURE,
+  SIGNOUT_USER_START,
+  SIGNOUT_USER_SUCCESS,
   SelectCurrentUser,
   SelectError,
   SelectLoading,
@@ -26,9 +29,9 @@ const Profile = () => {
   const [filePercentage, setFilePercentage] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
-  const [updateSuccess, setUpdateSuccess] = useState(false)
-  const error = useSelector(SelectError)
-  const loading = useSelector(SelectLoading)
+  const [updateSuccess, setUpdateSuccess] = useState(false);
+  const error = useSelector(SelectError);
+  const loading = useSelector(SelectLoading);
   useEffect(() => {
     if (file) {
       handleFileUpload(file);
@@ -101,30 +104,40 @@ const Profile = () => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
-const handleDeleteUser = async (e) => {
+  const handleDeleteUser = async () => {
+    try {
+      dispatch(DELETE_USER_START());
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(DELETE_USER_FAILURE(data.message));
+        return;
+      }
 
-try {
-  dispatch(DELETE_USER_START());
-  const res = await fetch(`/api/user/delete/${currentUser._id}` , {
-method: 'DELETE',
-})
-const data = await res.json();
-if(data.success === false) {
-dispatch(DELETE_USER_FAILURE(data.message));
-return;
-}
+      dispatch(DELETE_USER_SUCCESS(data));
+    } catch (error) {
+      dispatch(DELETE_USER_FAILURE(error.message));
+    }
+  };
 
-dispatch(DELETE_USER_SUCCESS(data));
-} catch (error) {
-  dispatch(DELETE_USER_FAILURE(error.message))
-}
+  const handleSignOut = async () => {
+    try {
+      dispatch(SIGNOUT_USER_START());
+      const res = await fetch("/api/auth/signout");
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(SIGNOUT_USER_FAILURE(data.message));
 
+        return;
+      }
+      dispatch(SIGNOUT_USER_SUCCESS(data));
 
-
-}
-
-
-
+    } catch (error) {
+      dispatch(SIGNOUT_USER_FAILURE(error));
+    }
+  };
 
   return (
     <div className="p-3 max-w-lg mx-auto">
@@ -181,16 +194,28 @@ dispatch(DELETE_USER_SUCCESS(data));
           id="password"
           className="border p-3 rounded-lg "
         />
-        <button disabled={loading} className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80">
+        <button
+          disabled={loading}
+          className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80"
+        >
           {loading ? "Loading..." : "Update"}
         </button>
       </form>
       <div className="flex justify-between mt-5">
-        <span onClick={handleDeleteUser} className="text-red-700 cursor-pointer ">Delete Account</span>
-        <span className="text-red-700 cursor-pointer ">Sign Out</span>
+        <span
+          onClick={handleDeleteUser}
+          className="text-red-700 cursor-pointer "
+        >
+          Delete Account
+        </span>
+        <span onClick={handleSignOut} className="text-red-700 cursor-pointer ">
+          Sign Out
+        </span>
       </div>
       <p className="text-red-700 mt-5">{error ? error : ""}</p>
-      <p className="text-green-700 mt-5">{updateSuccess ? 'User is Updated Successfully' : ""}</p>
+      <p className="text-green-700 mt-5">
+        {updateSuccess ? "User is Updated Successfully" : ""}
+      </p>
     </div>
   );
 };
