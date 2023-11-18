@@ -20,6 +20,7 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
+import { Link } from "react-router-dom";
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -31,13 +32,14 @@ const Profile = () => {
   const [formData, setFormData] = useState({});
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const error = useSelector(SelectError);
+  const [showListingsError, setshowListingsError] = useState(false);
   const loading = useSelector(SelectLoading);
   useEffect(() => {
     if (file) {
       handleFileUpload(file);
     }
   }, [file]);
-
+  const [userListings, setUserListings] = useState([]);
   const handleFileUpload = (file) => {
     const storage = getStorage();
     const storageRef = ref(
@@ -133,9 +135,23 @@ const Profile = () => {
         return;
       }
       dispatch(SIGNOUT_USER_SUCCESS(data));
-
     } catch (error) {
       dispatch(SIGNOUT_USER_FAILURE(error));
+    }
+  };
+
+  const handleShowListings = async () => {
+    try {
+      setshowListingsError(false);
+      const res = await fetch(`/api/user/listing/${currentUser._id}`);
+      const data = await res.json();
+      if (data.success) {
+        setshowListingsError(true);
+        return;
+      }
+      setUserListings(data);
+    } catch (error) {
+      setshowListingsError(true);
     }
   };
 
@@ -200,6 +216,12 @@ const Profile = () => {
         >
           {loading ? "Loading..." : "Update"}
         </button>
+        <Link
+          className="bg-green-700 text-white p-3 rounded-lg uppercase text-center hover:opacity-95"
+          to="/create-listing"
+        >
+          Create Listing
+        </Link>
       </form>
       <div className="flex justify-between mt-5">
         <span
@@ -216,6 +238,34 @@ const Profile = () => {
       <p className="text-green-700 mt-5">
         {updateSuccess ? "User is Updated Successfully" : ""}
       </p>
+      <button onClick={handleShowListings} className="text-green-700 w-full">
+        Show Listings
+      </button>
+      <p className="text-red-700 mt-5">
+        {showListingsError ? "Error showing listings " : ""}
+      </p>
+      {userListings &&
+        userListings.length > 0 &&
+        <div className="flex flex-col gap-4">
+          <h1 className="text-center mt-7 text-2xl font-semibold ">Your Listings</h1>
+         { userListings.map((listing) => (
+            <div key={listing._id} className="border rounded-lg p-3">
+              <Link to={`/listing/${listing._id}`} className="flex gap-4 justify-between items-center">
+                <img
+                  src={listing.imageUrls[0]}
+                  alt="listing cover"
+                  className="h-16 w-16 object-contain "
+                />
+                <p className="text-slate-700 font-semibold flex-1 hover:underline truncate">{listing.name}</p>
+                <div className="flex flex-col items-center">
+  <button className="text-red-700 uppercase">Delete</button>
+  <button className="text-red-700 uppercase">Edit</button>
+                </div>
+              </Link>
+            </div>
+          ))}
+
+        </div>}
     </div>
   );
 };

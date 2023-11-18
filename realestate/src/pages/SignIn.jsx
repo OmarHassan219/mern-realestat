@@ -25,6 +25,7 @@ const Signin = () => {
 
     try {
       dispatch(SIGN_IN_START());
+
       const response = await fetch("/api/auth/signin", {
         method: "POST",
         headers: {
@@ -32,6 +33,10 @@ const Signin = () => {
         },
         body: JSON.stringify(formData),
       });
+
+
+
+      
 
       const data = await response.json();
 
